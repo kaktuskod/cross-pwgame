@@ -11,6 +11,11 @@ const App = () => {
     console.log("handshake");
   });
 
+  io.on("event::gameFull", () => {
+    console.log("Player 2 found, please wait game will start in few second");
+    setGameStarted(true);
+  });
+
   io.on("event::gameStarted", () => {
     console.log("game started");
     setGameStarted(true);

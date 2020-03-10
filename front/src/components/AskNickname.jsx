@@ -13,8 +13,9 @@ const AskNickname = ({ io }) => {
 
   return (
     <div className="field">
+   
       <div className="control">
-        <input className="input" onChange={handleNickname} value={nickname} />
+        <input placeholder="Type your name" className="input" onChange={handleNickname} value={nickname} />
       </div>
       <div className="control">
         <a className="button is-info" onClick={sendNickname}>
