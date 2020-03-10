@@ -5,6 +5,7 @@ import MagicNumber from "./components/MagicNumber";
 
 const App = () => {
   const [isGameStarted, setGameStarted] = useState(false);
+  const [setHint] = useState('');
   const io = socketIO("http://localhost:3000");
 
   io.on("event::hello", () => {
@@ -17,9 +18,37 @@ const App = () => {
   });
 
   io.on("event::gameStarted", () => {
-    console.log("game started");
+    console.log("Game started");
     setGameStarted(true);
   });
+
+  io.on("event::gameStarted", () => {
+    console.log("Game started");
+    setGameStarted(true);
+  });
+
+  io.on("event::tryAgainHigher", () => {
+    console.log("Try Higher");
+    setHint("Higher");
+  });
+
+  io.on("event::tryAgainLower", () => {
+    console.log("Lower");
+    setHint("Lower");
+  });
+
+  io.on("event::tryAgainAlmost", () => {
+    console.log("Almost bro");
+    setHint("Almost");
+  });
+
+  io.on("event::youWin", () => {
+    console.log("You win");
+    setHint("Gold WINNER !");
+  });
+
+
+
 
   return (
     <section className="hero is-fullheight is-light">

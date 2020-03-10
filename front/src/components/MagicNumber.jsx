@@ -16,7 +16,7 @@ const MagicNumber = () => {
         return (
             <div className="field">
                 <div className="control">
-                    <input placeholder="Type your name" type="number" className="input" onChange={handleNumber} value={number} />
+                    <input placeholder="Try a number" type="number" className="input" onChange={handleNumber} value={number} />
                 </div>
                 <div className="control">
                     <a className="button is-info" onClick={sendNumber}>
