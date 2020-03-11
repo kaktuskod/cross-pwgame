@@ -51,9 +51,7 @@ const MagicNumber = ({ io, setGameStarted, setIsWaiting, players, setPlayers }) 
         <div className="field">
             <div>Stage {stage}</div>
             <div>
-                {players.length === 2
-                    ? `${players[0].nickname} ${players[0].score} - ${players[1].score} ${players[1].nickname}`
-                    : null}
+                {players.length === 2 ? `${players[0].nickname} ${players[0].score} - ${players[1].score} ${players[1].nickname}` : null}
             </div>
             <div className="control">
                 <input placeholder="Try a number" type="number" className="input" onChange={handleNumber} value={number} />

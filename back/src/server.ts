@@ -26,10 +26,9 @@ app.get("/", (_, res) => {
 io.on("connection", socket => {
   let currentUser: any;
 
-
   socket.on("event::initialize", payload => {
-    const playerSize = players.length
-    if (playerSize >= 2) {
+
+    if (players.length >= 2) {
       socket.emit("event::gameFull");
       return;
     }
@@ -38,14 +37,10 @@ io.on("connection", socket => {
 
     currentUser = payload.nickname;
 
-    console.log(`${payload.nickname} joined the party`);
-
-    //playerSize === 2 ? io.emit("event::gameStarted", { players }) : socket.emit("event::waitingPlayer");
     if (players.length === 2) {
       io.emit("event::gameStarted", { players });
       console.log(`game started`);
       console.log(players)
-
     } else {
       socket.emit("event::waitingPlayer");
     }
@@ -54,6 +49,7 @@ io.on("connection", socket => {
   // lorsqu'un joueur tente
   socket.on("event::try", payload => {
     const sentNumber = payload.number
+    console.log(`${currentUser} try ${sentNumber}`);
     console.log(magicNumber);
     if (sentNumber < magicNumber) {
       socket.emit("event::tryHigher");
@@ -65,10 +61,13 @@ io.on("connection", socket => {
 
     }
     else if (sentNumber == magicNumber) {
-      console.log("coucouc")
-      const winner = players.find(player => player.nickname === currentUser);
-      winner.score += 1;
-      winner.score !== 3 ? io.emit("event::nextStage", { players }) : socket.emit("event::endOfStage", { winner })
+      console.log("cas win")
+      console.log(currentUser)
+      console.log(players[0])
+      const winner = players.find(player => player.nickname == currentUser);
+      console.log(winner)
+      // winner.score += 1;2
+      // winner.score !== 3 ? io.emit("event::nextStage", { players }) : socket.emit("event::endOfStage", { winner })
 
     }
   });
