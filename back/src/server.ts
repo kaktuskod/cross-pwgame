@@ -6,7 +6,6 @@ import { config } from "dotenv";
 config();
 
 const PORT = process.env.PORT;
-
 const app = express();
 const server = createServer(app);
 const io = socketIO(server);
@@ -24,10 +23,10 @@ app.get("/", (_, res) => {
 });
 
 io.on("connection", socket => {
-  let currentUser: any;
+  let currentUser: any = null;
 
   socket.on("event::initialize", payload => {
-
+    console.log("initiliaze")
     if (players.length >= 2) {
       socket.emit("event::gameFull");
       return;
@@ -41,8 +40,6 @@ io.on("connection", socket => {
       io.emit("event::gameStarted", { players });
       console.log(`game started`);
       console.log(players)
-    } else {
-      socket.emit("event::waitingPlayer");
     }
   });
 
@@ -66,8 +63,8 @@ io.on("connection", socket => {
       console.log(players[0])
       const winner = players.find(player => player.nickname == currentUser);
       console.log(winner)
-      // winner.score += 1;2
-      // winner.score !== 3 ? io.emit("event::nextStage", { players }) : socket.emit("event::endOfStage", { winner })
+      winner.score += 1; 2
+      winner.score !== 3 ? io.emit("event::nextStage", { players }) : socket.emit("event::endOfStage", { winner })
 
     }
   });
@@ -88,5 +85,5 @@ io.on("connection", socket => {
 
 
 server.listen(PORT, () => {
-  console.log("Server ready at ...");
+  console.log(`Server is Online ✔️  on Port ${PORT}`);
 });

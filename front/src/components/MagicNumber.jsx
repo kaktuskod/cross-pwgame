@@ -29,6 +29,10 @@ const MagicNumber = ({ io, setGameStarted, setIsWaiting, players, setPlayers }) 
     io.on("event::tryHigher", () => {
         setHint(`More than ${previousNumber}`);
     });
+    
+    io.on("event::tryHigher", () => {
+        setHint(`More than ${previousNumber}`);
+    });
 
     io.on("event::tryLower", () => {
         setHint(`Less than ${previousNumber}`);
