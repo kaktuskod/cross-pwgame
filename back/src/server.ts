@@ -11,7 +11,8 @@ const app = express();
 const server = createServer(app);
 const io = socketIO(server);
 
-let players = {};
+
+let players: any[] = [];
 let invokeMagicNumber = () => {
   const result: number = Math.floor(Math.random() * (1337 - 0 + 1)) + 0;
   return result;
@@ -27,64 +28,51 @@ io.on("connection", socket => {
 
 
   socket.on("event::initialize", payload => {
-    const playerSize = Object.keys(players).length
+
+    const playerSize = players.length
 
     if (playerSize >= 2) {
       socket.emit("event::gameFull");
       return;
     }
 
-    players[socket.id] = {
-      ...payload
-    }
-    console.log("A new player joined the party ", payload.nickname);
+    players.push({ nickname: payload.nickname, score: 0 });
 
+    currentUser = payload.nickname;
+    console.log(`${payload.nickname} joined the party`);
 
-    if (playerSize === 2) {
-      console.log("GAME STARTED");
+    playerSize === 2 ? io.emit("event::gameStarted", { players }) : socket.emit("event::waitingPlayer");
 
-      io.emit("event::gameStarted");
-      // initialisation du nombre a trouver
-
-    }
   });
 
   // lorsqu'un joueur tente
   socket.on("event::try", payload => {
-    console.log("tried");
+    const sentNumber = payload.number
 
-    players[socket.id] = {
-      ...payload
+    switch (sentNumber) {
+
+      case (sentNumber < magicNumber):
+        socket.emit("event::tryHigher");
+        console.log("Its higher bro !");
+        break;
+
+      case (payload.number > magicNumber):
+        socket.emit("event::tryLower");
+        console.log("Its lower bro !");
+        break;
+
+      case (payload.number === magicNumber):
+
+        const winner = players.find(player => player.nickname === currentUser);
+        winner.score += 1;
+        winner.score !== 3 ? io.emit("event::nextStage", { players }) : socket.emit("event::endOfStage", { winner });
+
+        break;
+
+      default:
+        break;
     }
-    console.log(players);
 
-    if (trys.length > 2) {
-      switch (payload) {
-
-        case (payload.number > randNumber):
-          socket.emit("event::tryAgainHigher");
-          console.log("Its higher bro !");
-          break;
-
-        case (payload.number < randNumber):
-          socket.emit("event::tryAgainLower");
-          console.log("Its lower bro !");
-          break;
-
-        case (payload.number - randNumber === 1):
-          socket.emit("event::tryAgainAlmost");
-          console.log("... Damn Almost");
-          break;
-
-        case (payload.number === randNumber):
-          socket.emit("event::youWin");
-          console.log("... Damn Almost");
-          break;
-
-        default:
-          break;
-      }
-    }
 
   });
 })
