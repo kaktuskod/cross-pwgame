@@ -1,30 +1,65 @@
 import React, { useState } from "react";
+import { ToastContainer, toast } from 'react-toastify';
 
-const MagicNumber = () => {
+
+const MagicNumber = ({ io, setGameStarted, setIsWaiting, players, setPlayers }) => {
     <span> Magic </span>;
-    const AskNumber = ({ io }) => {
-        const [number, setNumber] = useState("");
 
-        const handleNumber = event => {
-            setNumber(event.target.value);
-        };
+    const [number, setNumber] = useState("");
+    const [previousNumber, setPreviousNumber] = useState("");
+    const [hint, setHint] = useState("");
+    const [stage, setStage] = useState(1);
 
-        const sendNumber = () => {
-            io.emit("event::try", { number });
-        };
+    const handleNumber = event => {
+        setNumber(event.target.value);
+        setPreviousNumber(event.target.value);
+    };
 
-        return (
-            <div className="field">
-                <div className="control">
-                    <input placeholder="Try a number" type="number" className="input" onChange={handleNumber} value={number} />
-                </div>
-                <div className="control">
-                    <a className="button is-info" onClick={sendNumber}>
-                        Try
-            </a>
-                </div>
+    const sendNumber = () => {
+        io.emit("event::try", { number: number });
+        setNumber("");
+    };
+
+
+    io.on("event::tryHigher", () => {
+        setHint(`More than ${previousProposal}`);
+    });
+
+    io.on("event::tryLower", () => {
+        setHint(`Less than ${previousProposal}`);
+    });
+
+    io.on("event::nextStage", payload => {
+        setStage(stage + 1);
+        setPlayers(payload.players);
+    });
+
+    io.on("event::endOfStage", payload => {
+        toast.success(`${payload.winner.nickname} win the game`, {
+            id: "end",
+        });
+        setGameStarted(false);
+        setIsWaiting(false);
+    });
+
+    return (
+        <div className="field">
+            <div>Stage {stage}</div>
+            <div>
+                {players.length === 2
+                    ? `${players[0].nickname} ${players[0].score} - ${players[1].score} ${players[1].nickname}`
+                    : null}
             </div>
-        );
-    }
+            <div className="control">
+                <input placeholder="Try a number" type="number" className="input" onChange={handleNumber} value={number} />
+            </div>
+            <div className="control">
+                <a className="button is-info" onClick={sendNumber}>
+                    Try
+            </a>
+            </div>
+        </div>
+    );
 }
+
 export default MagicNumber;

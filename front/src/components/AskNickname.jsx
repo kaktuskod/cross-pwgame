@@ -9,11 +9,12 @@ const AskNickname = ({ io }) => {
 
   const sendNickname = () => {
     io.emit("event::initialize", { nickname });
+    setNickname("");
   };
 
   return (
     <div className="field">
-   
+
       <div className="control">
         <input placeholder="Type your name" className="input" onChange={handleNickname} value={nickname} />
       </div>

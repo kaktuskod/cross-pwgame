@@ -2,49 +2,35 @@ import React, { useState, useEffect } from "react";
 import socketIO from "socket.io-client";
 import AskNickname from "./components/AskNickname";
 import MagicNumber from "./components/MagicNumber";
+import { ToastContainer, toast } from 'react-toastify';
+
 
 const App = () => {
   const [isGameStarted, setGameStarted] = useState(false);
-  const [setHint] = useState('');
-  const io = socketIO("http://localhost:3000");
-
-  io.on("event::hello", () => {
-    console.log("handshake");
-  });
+  const [isWaiting, setIsWaiting] = useState(false);
 
   io.on("event::gameFull", () => {
-    console.log("Player 2 found, please wait game will start in few second");
     setGameStarted(true);
+    console.log("Player 2 found the game is full Now. Please wait game will start in few second");
+
   });
 
   io.on("event::gameStarted", () => {
-    console.log("Game started");
     setGameStarted(true);
-  });
-
-  io.on("event::gameStarted", () => {
     console.log("Game started");
+  });
+
+  io.on("event::waitingPlayer", () => {
+    setGameStarted(false);
+    setIsWaiting(true);
+  });
+
+  io.on("event::gameStart", payload => {
     setGameStarted(true);
-  });
-
-  io.on("event::tryAgainHigher", () => {
-    console.log("Try Higher");
-    setHint("Higher");
-  });
-
-  io.on("event::tryAgainLower", () => {
-    console.log("Lower");
-    setHint("Lower");
-  });
-
-  io.on("event::tryAgainAlmost", () => {
-    console.log("Almost bro");
-    setHint("Almost");
-  });
-
-  io.on("event::youWin", () => {
-    console.log("You win");
-    setHint("Gold WINNER !");
+    toast.success("Ready ? Go !!! ", {
+      id: "start"
+    });
+    setPlayers(payload.players);
   });
 
 
@@ -67,7 +53,13 @@ const App = () => {
       <div className="hero-body">
         <div className="container">
           <header className="bd-index-header">
-            {!isGameStarted ? <AskNickname io={io} /> : <MagicNumber />}
+            {!isGameStarted ? <AskNickname io={io} /> :
+              <MagicNumber
+                io={io}
+                players={players}
+                setPlayers={setPlayers}
+                setGameStarted={setGameStarted}
+                setIsWaiting={setIsWaiting} />}
           </header>
         </div>
       </div>
