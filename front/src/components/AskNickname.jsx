@@ -12,14 +12,18 @@ const AskNickname = ({ io }) => {
     setNickname("");
   };
 
+  const style = { position: "fixed", bottom: "30%", left: "50%", transform: "translate(-50%, -50%)" }
+
+
   return (
+
     <div className="field">
 
       <div className="control">
         <input placeholder="Type your name" className="input" onChange={handleNickname} value={nickname} />
       </div>
       <div className="control">
-        <a className="button is-info" onClick={sendNickname}>
+        <a style={style} className="button is-info" onClick={sendNickname}>
           Send
         </a>
       </div>

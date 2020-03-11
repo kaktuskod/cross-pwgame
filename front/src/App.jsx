@@ -2,15 +2,20 @@ import React, { useState, useEffect } from "react";
 import socketIO from "socket.io-client";
 import AskNickname from "./components/AskNickname";
 import MagicNumber from "./components/MagicNumber";
+import WaitScreen from "./components/WaitScreen";
 import { ToastContainer, toast } from 'react-toastify';
 
 
 const App = () => {
   const [isGameStarted, setGameStarted] = useState(false);
   const [isWaiting, setIsWaiting] = useState(false);
+  const [players, setPlayers] = useState([]);
+  const io = socketIO("http://localhost:3000");
+
 
   io.on("event::gameFull", () => {
     setGameStarted(true);
+    toast.warning("Sorry bro it's full");
     console.log("Player 2 found the game is full Now. Please wait game will start in few second");
 
   });
@@ -34,7 +39,25 @@ const App = () => {
   });
 
 
-
+  const reloadScreen = () => {
+    if (isGameStarted === true) {
+      return (
+        <MagicNumber
+          io={io}
+          players={players}
+          setPlayers={setPlayers}
+          setGameStarted={setGameStarted}
+          setIsWaiting={setIsWaiting}
+        />
+      );
+    } else {
+      if (isWaiting === true) {
+        return <WaitScreen />;
+      } else {
+        return <AskNickname io={io} />;
+      }
+    }
+  }
 
   return (
     <section className="hero is-fullheight is-light">
@@ -53,13 +76,7 @@ const App = () => {
       <div className="hero-body">
         <div className="container">
           <header className="bd-index-header">
-            {!isGameStarted ? <AskNickname io={io} /> :
-              <MagicNumber
-                io={io}
-                players={players}
-                setPlayers={setPlayers}
-                setGameStarted={setGameStarted}
-                setIsWaiting={setIsWaiting} />}
+            {reloadScreen()}
           </header>
         </div>
       </div>

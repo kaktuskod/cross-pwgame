@@ -17,16 +17,21 @@ const MagicNumber = ({ io, setGameStarted, setIsWaiting, players, setPlayers }) 
 
     const sendNumber = () => {
         io.emit("event::try", { number: number });
+        console.log(number)
         setNumber("");
     };
 
+    const exitGame = () => {
+        io.emit("event::disconnect");
+
+    };
 
     io.on("event::tryHigher", () => {
-        setHint(`More than ${previousProposal}`);
+        setHint(`More than ${previousNumber}`);
     });
 
     io.on("event::tryLower", () => {
-        setHint(`Less than ${previousProposal}`);
+        setHint(`Less than ${previousNumber}`);
     });
 
     io.on("event::nextStage", payload => {
@@ -53,10 +58,10 @@ const MagicNumber = ({ io, setGameStarted, setIsWaiting, players, setPlayers }) 
             <div className="control">
                 <input placeholder="Try a number" type="number" className="input" onChange={handleNumber} value={number} />
             </div>
+            <div>{hint}</div>
             <div className="control">
-                <a className="button is-info" onClick={sendNumber}>
-                    Try
-            </a>
+                <a className="button is-info" onClick={sendNumber}>Try</a>
+                <a className="button is-info" onClick={exitGame}>Leave</a>
             </div>
         </div>
     );
