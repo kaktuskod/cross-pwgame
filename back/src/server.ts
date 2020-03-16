@@ -26,14 +26,14 @@ io.on("connection", socket => {
   let currentUser: any = null;
 
   socket.on("event::initialize", payload => {
-    console.log("initiliaze")
+    console.log(payload)
     if (players.length >= 2) {
       socket.emit("event::gameFull");
       return;
     }
 
     players.push({ nickname: payload.nickname, score: 0 });
-
+    console.log(players)
     currentUser = payload.nickname;
 
     if (players.length === 2) {
@@ -59,6 +59,8 @@ io.on("connection", socket => {
     }
     else if (sentNumber == magicNumber) {
       console.log("cas win")
+      magicNumber = invokeMagicNumber();
+      console.log(magicNumber)
       console.log(currentUser)
       console.log(players[0])
       const winner = players.find(player => player.nickname == currentUser);
@@ -79,10 +81,7 @@ io.on("connection", socket => {
       magicNumber = invokeMagicNumber();
     }
   });
-
-
 });
-
 
 server.listen(PORT, () => {
   console.log(`Server is Online ✔️  on Port ${PORT}`);

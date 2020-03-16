@@ -1,7 +1,7 @@
 import React, { createContext } from 'react'
 import SocketIO from 'socket.io-client'
 
-const io = SocketIO('http://localhost:4000')
+const io = SocketIO('http://localhost:8080')
 export const SocketContext = createContext(io)
 
 export const SocketProvider = ({ children }) => (
