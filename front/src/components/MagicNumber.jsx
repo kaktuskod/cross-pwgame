@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ToastContainer, toast } from 'react-toastify';
+
 
 
 const MagicNumber = ({ io, setGameStarted, setIsWaiting, players, setPlayers }) => {
@@ -10,11 +10,13 @@ const MagicNumber = ({ io, setGameStarted, setIsWaiting, players, setPlayers }) 
     const [hint, setHint] = useState("");
     const [stage, setStage] = useState(1);
 
+
+
     const handleNumber = event => {
         setNumber(event.target.value);
         setPreviousNumber(event.target.value);
     };
-
+   
     const sendNumber = () => {
         io.emit("event::try", { number: number });
         console.log(number)
@@ -29,7 +31,7 @@ const MagicNumber = ({ io, setGameStarted, setIsWaiting, players, setPlayers }) 
     io.on("event::tryHigher", () => {
         setHint(`More than ${previousNumber}`);
     });
-    
+
     io.on("event::tryHigher", () => {
         setHint(`More than ${previousNumber}`);
     });
@@ -63,8 +65,11 @@ const MagicNumber = ({ io, setGameStarted, setIsWaiting, players, setPlayers }) 
             <div>{hint}</div>
             <div className="control">
                 <a className="button is-info" onClick={sendNumber}>Try</a>
-                <a className="button is-info" onClick={exitGame}>Leave</a>
+                <a className="button is-info" onClick={exitGame}>Leeave</a>
+                <a className="button is-info" onClick={notify}>Notify</a>
+              
             </div>
+
         </div>
     );
 }

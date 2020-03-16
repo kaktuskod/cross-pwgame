@@ -65,7 +65,7 @@ io.on("connection", socket => {
       console.log(players[0])
       const winner = players.find(player => player.nickname == currentUser);
       console.log(winner)
-      winner.score += 1; 2
+      winner.score += 1; 
       winner.score !== 3 ? io.emit("event::nextStage", { players }) : socket.emit("event::endOfStage", { winner })
 
     }

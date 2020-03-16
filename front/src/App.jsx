@@ -10,6 +10,7 @@ import {
   Page404,
 } from 'src/pages'
 import { SocketProvider } from '@core/context'
+import { ToastContainer, toast } from "react-toastify";
 
 const App = () => {
   return (
